@@ -274,14 +274,14 @@ if "user_api_key" not in st.session_state:
     st.session_state.user_api_key = ""
 
 # --- ROUTING PAGES ---
-def render_login_page():
+def render_setup_page():
     st.markdown("""
     <style>
     .stApp {
         background: radial-gradient(circle at top left, #0f2027, #203a43, #2c5364);
     }
     [data-testid="block-container"] {
-        max-width: 450px;
+        max-width: 500px;
         padding-top: 10vh;
     }
     [data-testid="stForm"] {
@@ -292,8 +292,8 @@ def render_login_page():
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
         backdrop-filter: blur(15px);
     }
-    .login-title { font-size: 2.2rem; font-weight: 800; color: #ffffff; text-align: center; margin-bottom: 0px; letter-spacing: -0.5px; }
-    .login-sub { color: #a0aec0; font-size: 1rem; text-align: center; margin-bottom: 30px; letter-spacing: 0.5px; }
+    .setup-title { font-size: 2.2rem; font-weight: 800; color: #ffffff; text-align: center; margin-bottom: 0px; letter-spacing: -0.5px; }
+    .setup-sub { color: #a0aec0; font-size: 1rem; text-align: center; margin-bottom: 30px; line-height: 1.4; }
     div[data-testid="stTextInput"] label p { color: #cbd5e0; font-weight: 500; font-size: 0.95rem; }
     div[data-testid="stTextInput"] input {
         background-color: rgba(0, 0, 0, 0.2) !important;
@@ -301,9 +301,9 @@ def render_login_page():
         border: 1px solid rgba(255, 255, 255, 0.1) !important;
         border-radius: 8px;
     }
-    div[data-testid="stTextInput"] input:focus { border-color: #4facfe !important; box-shadow: 0 0 0 1px #4facfe !important; }
+    div[data-testid="stTextInput"] input:focus { border-color: #11998e !important; box-shadow: 0 0 0 1px #11998e !important; }
     .stButton>button {
-        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
         color: #ffffff;
         font-weight: 700;
         border: none;
@@ -312,38 +312,26 @@ def render_login_page():
         margin-top: 5px;
         transition: transform 0.2s ease, box-shadow 0.2s;
     }
-    .stButton>button:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(79, 172, 254, 0.4); border: none; color: white;}
+    .stButton>button:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(17, 153, 142, 0.4); border: none; color: white;}
     </style>
     """, unsafe_allow_html=True)
-    
-    with st.form("login_form", clear_on_submit=False):
-        st.markdown("<div class='login-title'>Secure Portal</div><div class='login-sub'>Document Intelligence System</div>", unsafe_allow_html=True)
-        user = st.text_input("Username")
-        pwd = st.text_input("Password", type="password")
-        submitted = st.form_submit_button("Authenticate", use_container_width=True)
+
+    with st.form("setup_form", clear_on_submit=False):
+        st.markdown("<div class='setup-title'>Document Intelligence</div><div class='setup-sub'>Please identify yourself and provide an API key to begin.</div>", unsafe_allow_html=True)
+        user_name = st.text_input("Full Name / Identifier", placeholder="e.g. Nawaf Alharbi")
+        api_key = st.text_input("OpenAI API Key", type="password", placeholder="sk-...")
         
+        submitted = st.form_submit_button("Initialize System", use_container_width=True)
         if submitted:
-            # Try to get users from st.secrets first, then fall back to environment variables
-            allowed_users = {}
-            try:
-                allowed_users = st.secrets.get("passwords", {})
-            except Exception:
-                pass
-            
-            # Fallback: Check for environment variables like PORTAL_PWD_LamaAlawfi="123"
-            env_users = {k.replace("PORTAL_PWD_", ""): v for k, v in os.environ.items() if k.startswith("PORTAL_PWD_")}
-            allowed_users.update(env_users)
-
-            if user in allowed_users and allowed_users[user] == pwd:
+            if user_name.strip() and len(api_key.strip()) > 20:
                 st.session_state.logged_in = True
-                st.session_state.current_user = user
+                st.session_state.current_user = user_name.strip()
+                st.session_state.user_api_key = api_key.strip()
+                os.environ["OPENAI_API_KEY"] = api_key.strip()
+                st.session_state.api_configured = True
                 st.rerun()
-            elif not allowed_users:
-                st.error("🔑 Authentication is not configured. Please add an environment variable 'PORTAL_PWD_YourName' on Render.")
             else:
-                st.error("Invalid credentials. Please attempt again.")
-
-def render_api_key_page():
+                st.error("Please provide both your name and a valid API key.")
     st.markdown("""
     <style>
     .stApp {

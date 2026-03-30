@@ -399,11 +399,6 @@ if not st.session_state.logged_in:
 if not st.session_state.api_configured:
     render_api_key_page()
     st.stop()
-        st.rerun()
-
-if not st.session_state.api_configured:
-    render_api_key_page()
-    st.stop()
 
 # --- SAFE TO INSTANTIATE AI ---
 if "graph" not in st.session_state:

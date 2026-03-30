@@ -401,12 +401,9 @@ def render_api_key_page():
                 st.error("Please provide a valid API sequence to proceed.")
 
 # --- EXECUTE APP ROUTING ---
-if not st.session_state.logged_in:
-    render_login_page()
-    st.stop()
-
+# --- EXECUTE APP ROUTING ---
 if not st.session_state.api_configured:
-    render_api_key_page()
+    render_setup_page()
     st.stop()
 
 # --- SAFE TO INSTANTIATE AI ---

@@ -323,13 +323,16 @@ def render_login_page():
         submitted = st.form_submit_button("Authenticate", use_container_width=True)
         
         if submitted:
-            allowed_users = st.secrets.get("passwords", {})
-            if user in allowed_users and allowed_users[user] == pwd:
-                st.session_state.logged_in = True
-                st.session_state.current_user = user
-                st.rerun()
-            else:
-                st.error("Invalid credentials. Please attempt again.")
+            try:
+                allowed_users = st.secrets.get("passwords", {})
+                if user in allowed_users and allowed_users[user] == pwd:
+                    st.session_state.logged_in = True
+                    st.session_state.current_user = user
+                    st.rerun()
+                else:
+                    st.error("Invalid credentials. Please attempt again.")
+            except Exception:
+                st.error("🔑 Secrets not configured. Please set up the 'passwords' secret on Render.")
 
 def render_api_key_page():
     st.markdown("""

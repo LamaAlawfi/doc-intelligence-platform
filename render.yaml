@@ -3,9 +3,7 @@ services:
     name: doc-intelligence-platform
     env: python
     buildCommand: pip install -r requirements.txt
-    startCommand: mkdir -p .streamlit && echo "$STREAMLIT_SECRETS" > .streamlit/secrets.toml && streamlit run app/main_ui.py --server.port $PORT --server.address 0.0.0.0 --server.headless true
+    startCommand: streamlit run app/main_ui.py --server.port $PORT --server.address 0.0.0.0 --server.headless true
     envVars:
       - key: OPENAI_API_KEY
-        sync: false
-      - key: STREAMLIT_SECRETS
         sync: false

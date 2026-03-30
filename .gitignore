@@ -1,0 +1,36 @@
+# Environment & Secrets
+.env
+.streamlit/secrets.toml
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+*.egg
+
+# Virtual Environment
+venv/
+.venv/
+
+# OS Files
+.DS_Store
+Thumbs.db
+.localized
+
+# IDE
+.idea/
+.vscode/
+
+# Generated Outputs & Runtime Data
+Outputs/
+storage/
+tmp/
+
+# Logs
+*.log
+
+# Gemini Agent Data
+.gemini/
+*.bak

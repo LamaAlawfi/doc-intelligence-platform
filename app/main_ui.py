@@ -332,63 +332,7 @@ def render_setup_page():
                 st.rerun()
             else:
                 st.error("Please provide both your name and a valid API key.")
-    st.markdown("""
-    <style>
-    .stApp {
-        background: radial-gradient(circle at top left, #0f2027, #203a43, #2c5364);
-    }
-    [data-testid="block-container"] {
-        max-width: 500px;
-        padding-top: 10vh;
-    }
-    [data-testid="stForm"] {
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        padding: 3rem 2rem;
-        border-radius: 1.5rem;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-        backdrop-filter: blur(15px);
-    }
-    .api-title { font-size: 2.2rem; font-weight: 800; color: #ffffff; text-align: center; margin-bottom: 0px; letter-spacing: -0.5px; }
-    .api-sub { color: #a0aec0; font-size: 1rem; text-align: center; margin-bottom: 30px; line-height: 1.4; }
-    div[data-testid="stTextInput"] label p { color: #cbd5e0; font-weight: 500; font-size: 0.95rem; }
-    div[data-testid="stTextInput"] input {
-        background-color: rgba(0, 0, 0, 0.2) !important;
-        color: white !important;
-        border: 1px solid rgba(255, 255, 255, 0.1) !important;
-        border-radius: 8px;
-    }
-    div[data-testid="stTextInput"] input:focus { border-color: #11998e !important; box-shadow: 0 0 0 1px #11998e !important; }
-    .stButton>button {
-        background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-        color: #ffffff;
-        font-weight: 700;
-        border: none;
-        border-radius: 8px;
-        padding: 0.6rem;
-        margin-top: 5px;
-        transition: transform 0.2s ease, box-shadow 0.2s;
-    }
-    .stButton>button:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(17, 153, 142, 0.4); border: none; color: white;}
-    </style>
-    """, unsafe_allow_html=True)
 
-    with st.form("api_form", clear_on_submit=False):
-        st.markdown("<div class='api-title'>API Configuration</div><div class='api-sub'>Please connect your secure language model keys to initiate the AI agents.</div>", unsafe_allow_html=True)
-        st.info("Your API key runs only in this secure session memory and is never saved.")
-        api_key = st.text_input("OpenAI API Key", type="password")
-        
-        submitted = st.form_submit_button("Initialize Platform", use_container_width=True)
-        if submitted:
-            if len(api_key.strip()) > 10:
-                st.session_state.user_api_key = api_key.strip()
-                os.environ["OPENAI_API_KEY"] = api_key.strip()
-                st.session_state.api_configured = True
-                st.rerun()
-            else:
-                st.error("Please provide a valid API sequence to proceed.")
-
-# --- EXECUTE APP ROUTING ---
 # --- EXECUTE APP ROUTING ---
 if not st.session_state.api_configured:
     render_setup_page()

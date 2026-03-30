@@ -323,16 +323,25 @@ def render_login_page():
         submitted = st.form_submit_button("Authenticate", use_container_width=True)
         
         if submitted:
+            # Try to get users from st.secrets first, then fall back to environment variables
+            allowed_users = {}
             try:
                 allowed_users = st.secrets.get("passwords", {})
-                if user in allowed_users and allowed_users[user] == pwd:
-                    st.session_state.logged_in = True
-                    st.session_state.current_user = user
-                    st.rerun()
-                else:
-                    st.error("Invalid credentials. Please attempt again.")
             except Exception:
-                st.error("🔑 Secrets not configured. Please set up the 'passwords' secret on Render.")
+                pass
+            
+            # Fallback: Check for environment variables like PORTAL_PWD_LamaAlawfi="123"
+            env_users = {k.replace("PORTAL_PWD_", ""): v for k, v in os.environ.items() if k.startswith("PORTAL_PWD_")}
+            allowed_users.update(env_users)
+
+            if user in allowed_users and allowed_users[user] == pwd:
+                st.session_state.logged_in = True
+                st.session_state.current_user = user
+                st.rerun()
+            elif not allowed_users:
+                st.error("🔑 Authentication is not configured. Please add an environment variable 'PORTAL_PWD_YourName' on Render.")
+            else:
+                st.error("Invalid credentials. Please attempt again.")
 
 def render_api_key_page():
     st.markdown("""
